@@ -3,6 +3,8 @@ import StatCard from "../components/StatCard";
 import MetricCard from "../components/MetricCard";
 import Panel from "../components/Panel";
 import BowlWeightChart from "../components/BowlWeightChart";
+import { useEffect, useState } from "react";
+import { getStatus } from "../api/feeder";
 
 const DEMO_STATUS = {
     lastFeedingTime: "Today, 7:45 PM",
@@ -15,6 +17,14 @@ const DEMO_STATUS = {
 };
 
 export default function Dashboard() {
+    const [status, setStatus] = useState<any | null>(null);
+
+    useEffect(() => {
+        getStatus()
+            .then(setStatus)
+            .catch((err) => console.error("Status error", err));
+    }, []);
+
     return (
         <Layout>
             {/* Hero section */}
@@ -71,25 +81,31 @@ export default function Dashboard() {
             {/* Main cards row */}
             <section className="grid grid-cols-1 xl:grid-cols-[2fr,1.4fr] gap-6 mb-6">
                 <StatCard title="Last Feeding" icon="🍖">
-                    <p className="text-sm text-slate-600">
-                        <span className="font-semibold text-choco">
-                            {DEMO_STATUS.lastFeedingPet}
-                        </span>{" "}
-                        ate{" "}
-                        <span className="font-semibold">
-                            {DEMO_STATUS.lastFeedingPortion}
-                        </span>{" "}
-                        at{" "}
-                        <span className="font-medium">
-                            {DEMO_STATUS.lastFeedingTime}
-                        </span>
-                        .
-                    </p>
-                    <p className="mt-2 text-xs text-slate-500">
-                        Mode: <span className="font-medium">Auto breakfast schedule</span>.
-                        Source: <span className="font-medium">Load cell confirmed</span>.
-                    </p>
+                    {status ? (
+                        <>
+                            <p className="text-sm text-slate-600">
+                                <span className="font-semibold text-choco">
+                                    {status.lastFeeding.pet}
+                                </span>{" "}
+                                ate{" "}
+                                <span className="font-semibold">
+                                    {status.lastFeeding.portion} g
+                                </span>{" "}
+                                at{" "}
+                                <span className="font-medium">
+                                    {status.lastFeeding.time}
+                                </span>
+                                .
+                            </p>
+                            <p className="mt-2 text-xs text-slate-500">
+                                Mode: Auto breakfast schedule (demo). Source: Load cell confirmed.
+                            </p>
+                        </>
+                    ) : (
+                        <p>Loading demo status...</p>
+                    )}
                 </StatCard>
+
 
                 <StatCard title="Bowl Status" icon="⚖️">
                     <p className="text-sm text-slate-600">
