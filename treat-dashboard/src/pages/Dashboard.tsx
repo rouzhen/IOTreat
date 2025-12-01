@@ -25,6 +25,14 @@ export default function Dashboard() {
             .catch((err) => console.error("Status error", err));
     }, []);
 
+    if (!status) {
+        return (
+            <Layout>
+                <p className="text-slate-500">Loading dashboard...</p>
+            </Layout>
+        );
+    }
+
     return (
         <Layout>
             {/* Hero section */}
@@ -59,20 +67,20 @@ export default function Dashboard() {
             <section className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
                 <MetricCard
                     label="Feedings today"
-                    value="3"
+                    value={status?.feedingsToday ?? "—"}
                     sublabel="Mocha • Luna • Mocha"
                     icon="🍖"
                 />
                 <MetricCard
                     label="Food level"
-                    value="28%"
+                    value={`${status?.foodLevel ?? "—"}%`}
                     sublabel="Top up recommended soon"
                     icon="📦"
                     tone="alert"
                 />
                 <MetricCard
                     label="Last motion near bowl"
-                    value="2 min ago"
+                    value={status?.lastMotionTime ?? "—"}
                     sublabel="Mocha sniffing around 👀"
                     icon="🎥"
                 />
@@ -110,17 +118,17 @@ export default function Dashboard() {
                 <StatCard title="Bowl Status" icon="⚖️">
                     <p className="text-sm text-slate-600">
                         <span className="font-semibold text-choco">
-                            {DEMO_STATUS.bowlStatus}
+                            {status.bowlStatus}
                         </span>
                     </p>
                     <p className="mt-1 text-sm text-slate-600">
                         Estimated remaining food:{" "}
                         <span className="font-semibold">
-                            {DEMO_STATUS.bowlWeight}
+                            {status.bowlWeight}
                         </span>
                     </p>
                     <p className="mt-2 text-xs text-slate-500">
-                        Last weight reading: 2 minutes ago • Load cell stable.
+                        Last weight reading: {status.lastMotionTime} • Load cell stable.
                     </p>
                 </StatCard>
             </section>
@@ -129,15 +137,16 @@ export default function Dashboard() {
             <section className="grid grid-cols-1 lg:grid-cols-[2fr,1.4fr] gap-6">
                 <StatCard title="Recent Pet Detected" icon="🐶">
                     <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                        <div className="w-14 h-14 rounded-full bg-[url('https://placekitten.com/200/200')] bg-cover bg-center shadow-md border border-latte/70" />
+                        <div className="w-14 h-14 rounded-full bg-[url('https://images.dog.ceo/breeds/terrier-welsh/lucy.jpg')] bg-cover bg-center shadow-md border border-latte/70" />
                         <div>
                             <p className="text-sm text-slate-600">
                                 <span className="font-semibold text-choco">
-                                    {DEMO_STATUS.recentPet}
-                                </span>
+                                    {status.recentPet.name}
+                                </span>{" "}
+                                ({status.recentPet.breed})
                             </p>
                             <p className="text-xs text-slate-500">
-                                Last seen {DEMO_STATUS.recentPetTime} • Looked at bowl, no
+                                Last seen {status.recentPet.time} • Looked at bowl, no
                                 feeding triggered.
                             </p>
                         </div>

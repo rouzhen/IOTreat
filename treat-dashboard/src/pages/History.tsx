@@ -1,4 +1,6 @@
 import Layout from "../components/Layout";
+import { getFeedingHistory } from "../api/feeder";
+import { useEffect, useState } from "react";
 
 const DEMO_HISTORY = [
     {
@@ -25,13 +27,21 @@ const DEMO_HISTORY = [
 ];
 
 export default function History() {
+    const [history, setHistory] = useState<any[] | null>(null);
+    useEffect(() => {
+        getFeedingHistory()
+            .then(setHistory)
+            .catch(err => console.error("History error", err));
+    }, []);
+
+    
     return (
         <Layout>
             <h1 className="text-3xl font-display text-choco mb-2">
                 Feeding history
             </h1>
             <p className="text-choco/70 mb-6">
-                Demo log of recent feedings. In production, this will come from
+                Complete log of feeding events, snacks, and auto-scheduled meals. In production, this will come from
                 DynamoDB.
             </p>
 
@@ -47,22 +57,28 @@ export default function History() {
                         </tr>
                     </thead>
                     <tbody>
-                        {DEMO_HISTORY.map((row, idx) => (
-                            <tr
-                                key={idx}
-                                className="border-t border-latte/30 even:bg-cream/40"
-                            >
-                                <td className="px-5 py-3">{row.time}</td>
-                                <td className="px-5 py-3">{row.pet}</td>
-                                <td className="px-5 py-3">{row.portion}</td>
-                                <td className="px-5 py-3">{row.mode}</td>
-                                <td className="px-5 py-3">
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-green-100 text-green-700 px-2 py-0.5 text-xs">
-                                        ✅ {row.status}
-                                    </span>
+                        {!history ? (
+                            <tr>
+                                <td colSpan={5} className="py-4 text-center text-slate-500">
+                                    Loading feeding history...
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            history.map((h, idx) => (
+                                <tr
+                                    key={idx}
+                                    className="border-t border-latte/30 even:bg-cream/40"
+                                >
+                                    <td className="py-2 px-3">{h.time}</td>
+                                    <td className="py-2 px-3">{h.pet}</td>
+                                    <td className="py-2 px-3">{h.amount} g</td>
+                                    <td className="py-2 px-3">{h.method}</td>
+                                    <td className="py-2 px-3">
+                                        {h.status === "Success" ? "🟢 Success" : "🟠 Warning"}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

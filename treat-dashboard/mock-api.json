@@ -2,8 +2,13 @@
     "status": [
         {
             "id": "demo-device",
+            "feedingsToday": 3,
+            "foodLevel": 28,
+            "lastMotionTime": "2 min ago",
+
             "bowlWeight": 52,
             "bowlStatus": "Almost Empty",
+
             "lastFeeding": {
                 "pet": "Mocha",
                 "portion": 25,
@@ -28,14 +33,14 @@
                     "pet": "Mocha",
                     "amount": 25,
                     "method": "Auto Dinner",
-                    "status": "OK"
+                    "status": "Success"
                 },
                 {
                     "time": "Nov 24, 1:15 PM",
                     "pet": "Mocha",
                     "amount": 10,
                     "method": "Manual Snack",
-                    "status": "OK"
+                    "status": "Success"
                 }
             ]
         }
