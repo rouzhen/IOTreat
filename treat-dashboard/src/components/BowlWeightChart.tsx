@@ -1,58 +1,71 @@
 import {
-    LineChart,
-    Line,
+    BarChart,
+    Bar,
     XAxis,
     YAxis,
     Tooltip,
     ResponsiveContainer,
     CartesianGrid,
+    Cell
 } from "recharts";
 
 const demoData = [
-    { time: "8:00", weight: 80 },
-    { time: "9:00", weight: 60 },
-    { time: "10:00", weight: 40 },
-    { time: "11:00", weight: 35 },
-    { time: "12:00", weight: 20 },
-    { time: "13:00", weight: 10 },
-    { time: "14:00", weight: 5 },
+    { time: "Start", weight: 0 },
+    { time: "Now", weight: 0 },
 ];
 
-export default function BowlWeightChart() {
+const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        // Don't show tooltip for empty placeholders
+        if (data.weight === 0) return null;
+        
+        return (
+            <div className="bg-white p-3 border border-latte/50 rounded-xl shadow-lg text-xs">
+                <p className="font-bold text-choco mb-1">{label}</p>
+                <p className="text-slate-600">Dispensed: <span className="font-semibold">{data.weight} g</span></p>
+                {data.note && (
+                    <p className="text-amber-600 font-medium mt-1">
+                        {data.note}
+                    </p>
+                )}
+            </div>
+        );
+    }
+    return null;
+};
+
+export default function BowlWeightChart({ data }: { data?: any[] }) {
+    const chartData = (data && data.length > 0) ? data : demoData;
+
     return (
         <div className="h-64 py-6">
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={demoData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f3e5d5" />
-                    <XAxis dataKey="time" tick={{ fontSize: 11 }} />
+                <BarChart data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f3e5d5" vertical={false} />
+                    <XAxis 
+                        dataKey="time" 
+                        tick={{ fontSize: 10, fill: '#888' }} 
+                        interval="preserveStartEnd"
+                    />
                     <YAxis
-                        tick={{ fontSize: 11 }}
-                        label={{
-                            value: "Weight (g)",
-                            angle: -90,
-                            position: "insideLeft",
-                            offset: -5,
-                        }}
+                        tick={{ fontSize: 10, fill: '#888' }}
+                        label={{ value: "Grams", angle: -90, position: "insideLeft", offset: 10, fontSize: 10 }}
                     />
-                    <Tooltip
-                        contentStyle={{
-                            borderRadius: 12,
-                            borderColor: "#f3d6b8",
-                            fontSize: 12,
-                        }}
-                    />
-                    <Line
-                        type="monotone"
-                        dataKey="weight"
-                        stroke="#f4a7b9"
-                        strokeWidth={2.5}
-                        dot={{ r: 3 }}
-                        activeDot={{ r: 6 }}
-                    />
-                </LineChart>
+                    <Tooltip content={<CustomTooltip />} cursor={{fill: '#fffbf7'}} />
+                    <Bar 
+                        dataKey="weight" 
+                        radius={[4, 4, 0, 0]}
+                        animationDuration={1500}
+                    >
+                        {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.weight > 0 ? "#f4a7b9" : "transparent"} />
+                        ))}
+                    </Bar>
+                </BarChart>
             </ResponsiveContainer>
-            <p className="mt-2 text-xs text-slate-500">
-                Demo data: simulated bowl weight trend across the afternoon.
+            <p className="mt-2 text-xs text-center text-slate-400">
+                Amount Dispensed per Feeding (Today)
             </p>
         </div>
     );

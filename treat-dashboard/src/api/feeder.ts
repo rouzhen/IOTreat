@@ -7,7 +7,7 @@ export function getStatus() {
 }
 
 export function getFeedingHistory() {
-    return apiGet(`/feeding-history`)
+    return apiGet(`/GetFeedingHistory`)
         .then((rows) => rows[0]?.records || []);
 }
 

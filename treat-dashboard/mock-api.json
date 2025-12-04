@@ -1,61 +1,59 @@
 {
-    "status": [
-        {
-            "id": "demo-device",
-            "feedingsToday": 3,
-            "foodLevel": 28,
-            "lastMotionTime": "2 min ago",
+  "status": [
+    {
+      "id": "demo-device",
+      "feedingsToday": 3,
+      "foodLevel": 28,
+      "lastMotionTime": "2 min ago",
 
-            "bowlWeight": 52,
-            "bowlStatus": "Almost Empty",
+      "bowlWeight": 52,
+      "bowlStatus": "Almost Empty",
 
-            "lastFeeding": {
-                "pet": "Mocha",
-                "portion": 25,
-                "time": "Today 7:45 PM"
-            },
-            "recentPet": {
-                "name": "Mocha",
-                "breed": "Shiba Inu",
-                "time": "2 min ago"
-            },
-            "alerts": [
-                "Low food"
-            ]
-        }
-    ],
-    "feeding-history": [
+      "lastFeeding": {
+        "pet": "Mocha",
+        "portion": 25,
+        "time": "Today 7:45 PM"
+      },
+      "recentPet": {
+        "name": "Mocha",
+        "breed": "Shiba Inu",
+        "time": "2 min ago"
+      },
+      "alerts": ["Low food"]
+    }
+  ],
+  "feeding-history": [
+    {
+      "deviceId": "demo-device",
+      "records": [
         {
-            "deviceId": "demo-device",
-            "records": [
-                {
-                    "time": "Nov 24, 7:45 PM",
-                    "pet": "Mocha",
-                    "amount": 25,
-                    "method": "Auto Dinner",
-                    "status": "Success"
-                },
-                {
-                    "time": "Nov 24, 1:15 PM",
-                    "pet": "Mocha",
-                    "amount": 10,
-                    "method": "Manual Snack",
-                    "status": "Success"
-                }
-            ]
-        }
-    ],
-    "pets": [
-        {
-            "name": "Mocha",
-            "type": "Shiba Inu",
-            "image": "/mocha.png"
+          "time": "Nov 24, 7:45 PM",
+          "pet": "Mocha",
+          "amount": 25,
+          "method": "Auto Dinner",
+          "status": "Success"
         },
         {
-            "name": "Luna",
-            "type": "British Shorthair",
-            "image": "/luna.png"
+          "time": "Nov 24, 1:15 PM",
+          "pet": "Mocha",
+          "amount": 10,
+          "method": "Manual Snack",
+          "status": "Success"
         }
-    ],
-    "command": []
+      ]
+    }
+  ],
+  "pets": [
+    {
+      "name": "Mocha",
+      "type": "Shiba Inu",
+      "image": "/mocha.png"
+    },
+    {
+      "name": "Luna",
+      "type": "British Shorthair",
+      "image": "/luna.png"
+    }
+  ],
+  "command": []
 }
