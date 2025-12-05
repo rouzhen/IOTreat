@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import History from "./pages/History";
 import Pets from "./pages/Pets";
 import Controls from "./pages/Controls";
+import Onboarding from "./pages/OnBoarding";
 
 const router = createBrowserRouter([
   { path: "/", element: <Dashboard /> },
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
   { path: "/pets", element: <Pets /> },
   { path: "/pets/mocha", element: <MochaDetail /> },
   { path: "/controls", element: <Controls /> },
+  { path: "/onboarding", element: <Onboarding /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

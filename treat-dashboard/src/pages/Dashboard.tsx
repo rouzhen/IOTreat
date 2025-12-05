@@ -134,9 +134,17 @@ export default function Dashboard() {
             <section className="grid grid-cols-1 lg:grid-cols-[2fr,1.4fr] gap-6">
                 <StatCard title="Recent Pet Detected" icon="🐶">
                     <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                        <div className="w-14 h-14 rounded-full bg-latte/20 flex items-center justify-center text-2xl shadow-inner border border-latte/70">
-                            {status?.recentPet?.name === "Cat" ? "🐱" : "🐶"}
-                        </div>
+                    <div className="w-14 h-14 rounded-full bg-latte/20 flex items-center justify-center text-2xl shadow-inner border border-latte/70 overflow-hidden">
+                        {status?.recentPet?.image ? (
+                            <img 
+                                src={status.recentPet.image} 
+                                alt={status.recentPet.name} 
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <span>{status?.recentPet?.name === "Cat" ? "🐱" : "🐶"}</span>
+                        )}
+                    </div>
                         <div>
                             <p className="text-sm text-slate-600">
                                 <span className="font-semibold text-choco">

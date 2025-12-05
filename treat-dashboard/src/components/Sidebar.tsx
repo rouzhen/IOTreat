@@ -5,6 +5,7 @@ const routes = [
     { name: "History", path: "/history", icon: "📜" },
     { name: "Pets", path: "/pets", icon: "🐾" },
     { name: "Controls", path: "/controls", icon: "⚙️" },
+    { name: "Onboarding", path: "/onboarding", icon: "🚀" },
 ];
 
 export default function Sidebar() {
