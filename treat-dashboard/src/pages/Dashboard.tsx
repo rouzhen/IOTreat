@@ -7,26 +7,41 @@ import { useEffect, useState } from "react";
 import { getStatus } from "../api/feeder";
 
 export default function Dashboard() {
+    // 1. STATE & HOOKS (Must be at the top)
     const [status, setStatus] = useState<any | null>(null);
 
     useEffect(() => {
-        getStatus()
-            .then((data) => {
-                // If API returns an array (from Lambda), grab the first item
-                const validData = Array.isArray(data) ? data[0] : data;
-                setStatus(validData);
-            })
-            .catch((err) => console.error("Status error", err));
+        const fetchData = () => {
+            getStatus()
+                .then((data) => {
+                    const validData = Array.isArray(data) ? data[0] : data;
+                    setStatus(validData);
+                })
+                .catch((err) => console.error("Status error", err));
+        };
+
+        // Fetch immediately
+        fetchData();
+
+        // Auto-refresh every 2 seconds (Polling)
+        const intervalId = setInterval(fetchData, 2000);
+
+        // Cleanup when leaving page
+        return () => clearInterval(intervalId);
     }, []);
 
+    // 2. LOADING CHECK (Prevents "null" crashes)
     if (!status) {
         return (
             <Layout>
-                <p className="text-slate-500">Loading dashboard...</p>
+                <div className="flex items-center justify-center h-64 text-slate-400">
+                    Loading dashboard...
+                </div>
             </Layout>
         );
     }
 
+    // 3. RENDER (Using your "Old Code" logic with added safety)
     return (
         <Layout>
             {/* Hero section */}
@@ -50,7 +65,7 @@ export default function Dashboard() {
                             <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" />
                             Feeder online
                         </span>
-                        <button 
+                        <button
                             onClick={() => window.location.reload()}
                             className="text-xs rounded-full border border-latte/80 bg-white/70 px-3 py-1 shadow-sm hover:bg-latte/40 transition"
                         >
@@ -71,9 +86,9 @@ export default function Dashboard() {
                 <MetricCard
                     label="Food level"
                     value={`${status?.foodLevel ?? 0}%`}
-                    sublabel={status?.foodLevel < 20 ? "Low - Refill soon" : "Healthy level"}
+                    sublabel={(status?.foodLevel ?? 0) < 20 ? "Low - Refill soon" : "Healthy level"}
                     icon="📦"
-                    tone={status?.foodLevel < 20 ? "alert" : "normal"}
+                    tone={(status?.foodLevel ?? 0) < 20 ? "alert" : "normal"}
                 />
                 <MetricCard
                     label="Last motion near bowl"
@@ -86,20 +101,21 @@ export default function Dashboard() {
             {/* Main cards row */}
             <section className="grid grid-cols-1 xl:grid-cols-[2fr,1.4fr] gap-6 mb-6">
                 <StatCard title="Last Feeding" icon="🍖">
-                    {status?.lastFeeding?.pet !== "None" ? (
+                    {/* SAFE CHECK: Check if lastFeeding exists AND has a pet */}
+                    {status?.lastFeeding && status?.lastFeeding?.pet !== "None" ? (
                         <>
                             <p className="text-sm text-slate-600">
                                 Dispensed{" "}
                                 <span className="font-semibold">
-                                    {status.lastFeeding.portion} g
+                                    {status?.lastFeeding?.portion ?? 0} g
                                 </span>{" "}
                                 for{" "}
                                 <span className="font-semibold text-choco">
-                                    {status.lastFeeding.pet}
+                                    {status?.lastFeeding?.pet ?? "Unknown"}
                                 </span>{" "}
                                 at{" "}
                                 <span className="font-medium">
-                                    {status.lastFeeding.time}
+                                    {status?.lastFeeding?.time ?? "Unknown"}
                                 </span>
                                 .
                             </p>
@@ -108,7 +124,9 @@ export default function Dashboard() {
                             </p>
                         </>
                     ) : (
-                        <p className="text-sm text-slate-500">No feedings recorded yet today.</p>
+                        <p className="text-sm text-slate-500 italic">
+                            No feedings recorded yet today.
+                        </p>
                     )}
                 </StatCard>
 
@@ -134,17 +152,21 @@ export default function Dashboard() {
             <section className="grid grid-cols-1 lg:grid-cols-[2fr,1.4fr] gap-6">
                 <StatCard title="Recent Pet Detected" icon="🐶">
                     <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                    <div className="w-14 h-14 rounded-full bg-latte/20 flex items-center justify-center text-2xl shadow-inner border border-latte/70 overflow-hidden">
-                        {status?.recentPet?.image ? (
-                            <img 
-                                src={status.recentPet.image} 
-                                alt={status.recentPet.name} 
-                                className="w-full h-full object-cover"
-                            />
-                        ) : (
-                            <span>{status?.recentPet?.name === "Cat" ? "🐱" : "🐶"}</span>
-                        )}
-                    </div>
+                        <div className="w-14 h-14 rounded-full bg-latte/20 flex items-center justify-center text-2xl shadow-inner border border-latte/70 overflow-hidden">
+                            {status?.recentPet?.image ? (
+                                <img
+                                    src={status.recentPet.image}
+                                    alt={status?.recentPet?.name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                        (e.target as HTMLImageElement).parentElement!.innerText = "🐶";
+                                    }}
+                                />
+                            ) : (
+                                <span>{status?.recentPet?.name === "Cat" ? "🐱" : "🐶"}</span>
+                            )}
+                        </div>
                         <div>
                             <p className="text-sm text-slate-600">
                                 <span className="font-semibold text-choco">
@@ -153,7 +175,7 @@ export default function Dashboard() {
                                 ({status?.recentPet?.breed ?? "Pet"})
                             </p>
                             <p className="text-xs text-slate-500">
-                                Last seen: {status?.recentPet?.time}
+                                Last seen: {status?.recentPet?.time ?? "Unknown"}
                             </p>
                         </div>
                     </div>
@@ -166,7 +188,7 @@ export default function Dashboard() {
                                 <li key={idx}>{event}</li>
                             ))
                         ) : (
-                            <li>No events recorded yet today.</li>
+                            <li className="italic text-slate-400">No events recorded yet today.</li>
                         )}
                     </ul>
                 </StatCard>

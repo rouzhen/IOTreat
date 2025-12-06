@@ -20,11 +20,14 @@ export function sendCommand(action: string, amount?: number) {
     return apiPost(`/command`, { deviceId: DEVICE_ID, action, amount });
 }
 
-export function addPetProfile(name: string, species: string, image: string | null) {
-    return apiPost(`/AddPetProfile`, { 
-        name, 
-        species, 
-        image 
+// Update this function
+export function addPetProfile(name: string, species: string, image: string | null, portion?: number, cooldown?: number) {
+    return apiPost(`/add-pet`, {
+        name,
+        species,
+        image,
+        portion,
+        cooldown
     });
 }
 

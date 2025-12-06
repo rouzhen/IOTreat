@@ -2,29 +2,6 @@ import Layout from "../components/Layout";
 import { getFeedingHistory } from "../api/feeder";
 import { useEffect, useState } from "react";
 
-const DEMO_HISTORY = [
-    {
-        time: "Today, 7:45 PM",
-        pet: "Mocha",
-        portion: "25 g",
-        mode: "Auto – Dinner",
-        status: "Success",
-    },
-    {
-        time: "Today, 1:15 PM",
-        pet: "Mocha",
-        portion: "10 g",
-        mode: "Manual snack",
-        status: "Success",
-    },
-    {
-        time: "Today, 8:00 AM",
-        pet: "Mocha & Luna",
-        portion: "20 g + 18 g",
-        mode: "Auto – Breakfast",
-        status: "Success",
-    },
-];
 
 export default function History() {
     const [history, setHistory] = useState<any[] | null>(null);
@@ -34,7 +11,23 @@ export default function History() {
             .catch(err => console.error("History error", err));
     }, []);
 
-    
+    // In History.tsx
+
+    useEffect(() => {
+        const fetchHistory = () => {
+            getFeedingHistory()
+                .then(setHistory)
+                .catch(err => console.error("History error", err));
+        };
+
+        fetchHistory();
+
+        // Poll every 5 seconds (History is less urgent than Dashboard)
+        const interval = setInterval(fetchHistory, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <Layout>
             <h1 className="text-3xl font-display text-choco mb-2">
