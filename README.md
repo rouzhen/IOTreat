@@ -63,7 +63,7 @@ Backend cloud components (AWS IoT Core, Lambda functions, DynamoDB tables, Event
 
 This structure reflects the project’s focus on cloud service orchestration, event-driven backend design, and system behavior rather than deployment automation.
 
-### Backend
+### Raspberry Pi Backend
 - `raspberry-pi/`: Contains all scripts intended to run on the Raspberry Pi for edge processing and hardware control.
 
    - `test-scripts/`: Scripts for testing individual components (load cell, servo, MQTT communication) independently.
