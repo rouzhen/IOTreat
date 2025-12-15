@@ -30,15 +30,24 @@ The frontend interacts with these pipelines through HTTP APIs exposed via Amazon
 ## Repository Structure
 ```text
 IOTreat/
-├── treat-dashboard/ # Primary project directory
-│ ├── src/
-│ │ ├── pages/ # Dashboard views (Dashboard, History, Pets, Controls, Onboarding)
-│ │ ├── components/ # Reusable UI components
-│ │ ├── apis/ # HTTP API wrappers for AWS Lambda endpoints
-│ │ └── assets/
-│ ├── public/
-│ ├── package.json
-│ └── vite.config.js
+├── treat-dashboard/       # Frontend dashboard
+│   ├── src/
+│   │   ├── pages/        # Dashboard views (Dashboard, History, Pets, Controls, Onboarding)
+│   │   ├── components/   # Reusable UI components
+│   │   ├── apis/         # HTTP API wrappers for AWS Lambda endpoints
+│   │   └── assets/       # Images, icons, and other assets
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+├── raspberry-pi/         # Raspberry Pi code for the IoTreat system
+│   ├── test-scripts/     # Scripts for testing individual components
+│   │   ├── test_loadcell3.py       # HX711/load cell testing
+│   │   ├── test_servo.py           # Servo motor testing
+│   │   ├── test_publish.py         # MQTT publish testing
+│   │   ├── test_subscribe.py       # MQTT subscription testing
+|   |   └── other simulation & integration scripts...
+│   ├── rpi_petDetection_integrated.py # Integrated script with detection, servo, HX711, and MQTT publish
+│   └── petFeeder_CLOUDY7.py        # Full integration with detection, servo, HX711, MQTT publish + subscribe
 ├── README.md
 ```
 
@@ -46,12 +55,27 @@ IOTreat/
 
 ## Repository Organization Note
 
+### Frontend
 All application code is contained within the `treat-dashboard/` directory.  
 This includes the React frontend and client-side API integration logic.
 
 Backend cloud components (AWS IoT Core, Lambda functions, DynamoDB tables, EventBridge schedules, and S3 buckets) are provisioned and managed directly through the AWS Console rather than through Infrastructure-as-Code files stored in this repository.
 
 This structure reflects the project’s focus on cloud service orchestration, event-driven backend design, and system behavior rather than deployment automation.
+
+### Backend
+- `raspberry-pi/`: Contains all scripts intended to run on the Raspberry Pi for edge processing and hardware control.
+
+   - `test-scripts/`: Scripts for testing individual components (load cell, servo, MQTT communication) independently.
+
+   - Integration scripts:
+
+      - `petFeeder_CLOUDY7.py`: *Full* integration including MQTT publish and subscribe, suitable for demo or production scenarios.
+
+      - `rpi_petDetection_integrated.py`: Combines detection, servo, HX711, and MQTT publish only.
+
+This structure separates testing and development of individual hardware/software components from fully integrated system operation, facilitating iterative development, debugging, and safe demonstration on the Raspberry Pi.
+
 
 ---
 
